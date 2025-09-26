@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>L'homme qui rétrécit — prototype</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 300vh;
+      /* long pour scroller */
+      background: #fdfdfd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    h1 {
+      margin: 50px 0;
+      font-size: 3rem;
+      transition: transform 0.2s ease-out;
+    }
+
+    .shrink-btn {
+      margin: 50px;
+      padding: 20px 40px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border: 2px solid black;
+      background: white;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hover-text {
+      font-size: 2rem;
+      color: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .hover-text:hover {
+      color: black;
+      font-size: 3rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id="scrollText">Je rétrécis...</h1>
+
+  <button class="shrink-btn" id="shrinkButton">Clique-moi</button>
+
+  <p class="hover-text">Passe ta souris ici pour me révéler.</p>
+
+  <script>
+    // Effet de scroll : texte qui change d'échelle
+    const scrollText = document.getElementById("scrollText");
+    window.addEventListener("scroll", () => {
+      let scrollPos = window.scrollY;
+      let scale = 1 + (Math.sin(scrollPos / 200) * 0.5); // oscille entre 0.5 et 1.5
+      scrollText.style.transform = `scale(${scale})`;
+    });
+
+    // Effet de clic : bouton qui rétrécit et disparaît
+    const shrinkButton = document.getElementById("shrinkButton");
+    let scaleValue = 1;
+    shrinkButton.addEventListener("click", () => {
+      scaleValue *= 0.7; // réduit à chaque clic
+      shrinkButton.style.transform = `scale(${scaleValue})`;
+      if (scaleValue < 0.2) {
+        shrinkButton.classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+
+</html>
