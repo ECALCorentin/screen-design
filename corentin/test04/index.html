@@ -9,6 +9,12 @@
 </head>
 
 <body>
+  <!-- Indicateur de position de la souris -->
+  <div class="mouse-indicator" id="mouseIndicator"></div>
+
+  <!-- Information sur l'interaction -->
+
+
   <div class="sections">
     <section class="left">
       <div class="black-circle"></div>
@@ -18,11 +24,13 @@
     </section>
   </div>
 
-  <!-- Contenu pour permettre le défilement -->
+  <!-- Contenu informatif -->
   <div class="scroll-content">
-    <p>Scrollez pour voir l'effet sur les cercles !</p>
-    <p>Scroll vers le haut : cercle gauche grandit, cercle droit rétrécit</p>
-    <p>Scroll vers le bas : cercle gauche rétrécit, cercle droit grandit</p>
+    <p>Glissez et déposez les cercles pour voir l'effet !</p>
+    <p>Traînez un cercle vers l'autre : le cercle traîné grandit</p>
+    <p>L'autre cercle rétrécit en même temps</p>
+    <p>Plus les cercles sont proches, plus l'effet est fort</p>
+    <p>Relâchez pour que les cercles reprennent leur taille normale</p>
   </div>
   <script src="script.js"></script>
 </body>

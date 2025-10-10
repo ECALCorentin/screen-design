@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test 01</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Indicateur de position de la souris -->
+  <div class="mouse-indicator" id="mouseIndicator"></div>
+
+  <!-- Information sur l'interaction -->
+  <div class="interaction-info">
+    <strong>Contrôles souris :</strong><br>
+    ← → Mouvement horizontal<br>
+    ↑ ↓ Effet vertical additionnel
+  </div>
+
+  <div class="sections">
+    <section class="left">
+      <div class="black-circle"></div>
+    </section>
+    <section class="right">
+      <div class="black-circle"></div>
+    </section>
+  </div>
+
+  <!-- Contenu informatif -->
+  <div class="scroll-content">
+    <p>Bougez votre souris pour voir l'effet sur les cercles !</p>
+    <p>Souris à gauche : cercle gauche grandit, cercle droit rétrécit</p>
+    <p>Souris à droite : cercle gauche rétrécit, cercle droit grandit</p>
+    <p>Mouvement vertical : effet additionnel sur les deux cercles</p>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>

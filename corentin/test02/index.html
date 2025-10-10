@@ -1,84 +1,36 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <title>L'homme qui rétrécit — prototype</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      height: 300vh;
-      /* long pour scroller */
-      background: #fdfdfd;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-    }
-
-    h1 {
-      margin: 50px 0;
-      font-size: 3rem;
-      transition: transform 0.2s ease-out;
-    }
-
-    .shrink-btn {
-      margin: 50px;
-      padding: 20px 40px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border: 2px solid black;
-      background: white;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-
-    .hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .hover-text {
-      font-size: 2rem;
-      color: transparent;
-      transition: all 0.3s ease;
-    }
-
-    .hover-text:hover {
-      color: black;
-      font-size: 3rem;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test 01</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <h1 id="scrollText">Je rétrécis...</h1>
+  <div class="circles-container">
+    <!-- Cercle central -->
+    <div class="black-circle center-circle" data-index="center"></div>
 
-  <button class="shrink-btn" id="shrinkButton">Clique-moi</button>
+    <!-- Cercles périphériques -->
+    <div class="black-circle orbit-circle" data-index="0"></div>
+    <div class="black-circle orbit-circle" data-index="1"></div>
+    <div class="black-circle orbit-circle" data-index="2"></div>
+    <div class="black-circle orbit-circle" data-index="3"></div>
+    <div class="black-circle orbit-circle" data-index="4"></div>
+    <div class="black-circle orbit-circle" data-index="5"></div>
+    <div class="black-circle orbit-circle" data-index="6"></div>
+    <div class="black-circle orbit-circle" data-index="7"></div>
+  </div>
 
-  <p class="hover-text">Passe ta souris ici pour me révéler.</p>
-
-  <script>
-    // Effet de scroll : texte qui change d'échelle
-    const scrollText = document.getElementById("scrollText");
-    window.addEventListener("scroll", () => {
-      let scrollPos = window.scrollY;
-      let scale = 1 + (Math.sin(scrollPos / 200) * 0.5); // oscille entre 0.5 et 1.5
-      scrollText.style.transform = `scale(${scale})`;
-    });
-
-    // Effet de clic : bouton qui rétrécit et disparaît
-    const shrinkButton = document.getElementById("shrinkButton");
-    let scaleValue = 1;
-    shrinkButton.addEventListener("click", () => {
-      scaleValue *= 0.7; // réduit à chaque clic
-      shrinkButton.style.transform = `scale(${scaleValue})`;
-      if (scaleValue < 0.2) {
-        shrinkButton.classList.add("hidden");
-      }
-    });
-  </script>
+  <!-- Contenu pour permettre le défilement -->
+  <div class="scroll-content">
+    <p>Scrollez pour voir l'effet sur les cercles !</p>
+    <p>Le cercle central rétrécit pendant que tous les cercles autour grandissent</p>
+    <p>Plus vous scrollez, plus l'effet s'intensifie</p>
+  </div>
+  <script src="script.js"></script>
 </body>
 
 </html>

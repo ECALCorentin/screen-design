@@ -1,0 +1,130 @@
+.black-circle {
+    width: 300px;
+    height: 300px;
+    background-color: black;
+    border-radius: 50%;
+    cursor: grab;
+    will-change: width, height, transform;
+    transition: transform 0.3s ease-out;
+    user-select: none;
+}
+
+.black-circle:hover {
+    background-color: #333;
+}
+
+.black-circle.dragging {
+    cursor: grabbing;
+    background-color: #555;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+section{
+    width: 50%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sections{
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+.scroll-content {
+    margin-top: 100vh;
+    padding: 50px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    line-height: 3;
+    font-size: 18px;
+}
+
+.scroll-content p {
+    margin: 100px 0;
+}
+
+/* Indicateur de position de la souris */
+.mouse-indicator {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+}
+
+body {
+    cursor: default; /* Curseur par défaut pour le drag */
+    overflow: hidden; /* Empêcher le scroll pendant le drag */
+}
+
+/* Zone d'information sur l'interaction */
+.interaction-info {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    z-index: 100;
+}
+
+/* Lorem ipsum brut en haut à gauche */
+.lorem-text {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    max-width: 300px;
+    font-family: serif;
+    font-size: 12px;
+    color: black;
+    background: none;
+    z-index: 10;
+    line-height: 1.4;
+    transform-origin: top left;
+    transition: transform 0.1s ease-out;
+    will-change: transform, line-height;
+}
+
+/* Paragraphe qui rétrécit avec la proximité */
+.proximity-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 500;
+    transition: all 0.1s ease-out;
+    font-family: 'Arial', sans-serif;
+    max-width: 400px;
+    will-change: transform, font-size;
+}
+
+.proximity-text h2 {
+    margin: 0 0 15px 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.proximity-text p {
+    margin: 0;
+    font-size: 18px;
+    opacity: 0.9;
+}
