@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ronds sticky à positions variées</title>
+    <style>
+      :root {
+        --circle-size: 120px;
+        --circle-border: 3px;
+        --gap: 90vh;
+        --appear-margin: 20%;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      /* ===== Fond fixe ===== */
+      body {
+        min-height: 400vh;
+        background: radial-gradient(
+          circle at 50% 20%,
+          #ffffff,
+          #ececec 40%,
+          #dfdfdf 80%
+        );
+        background-attachment: fixed;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          sans-serif;
+      }
+
+      /* Conteneur général */
+      .stack {
+        position: relative;
+        height: calc(120vh + 8 * var(--gap) + 150vh);
+      }
+
+      .spacer {
+        height: 120vh;
+      }
+      .gap {
+        height: var(--gap);
+      }
+
+      /* ===== Style de base des ronds ===== */
+      .circle {
+        position: sticky;
+        top: calc(var(--stop-vh, 50vh) - var(--circle-size) / 2);
+        left: var(--stop-x, 50%);
+        transform: translate(-50%, 0) scale(0);
+        width: var(--circle-size);
+        height: var(--circle-size);
+        border-radius: 50%;
+        border: var(--circle-border) solid #000;
+
+        opacity: 0;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        pointer-events: none;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      .circle.visible {
+        transform: translate(-50%, 0) scale(1);
+        opacity: 1;
+      }
+
+      /* ===== Positionnement individuel ===== */
+      #c0 {
+        z-index: 1;
+        --stop-vh: 20vh;
+        --stop-x: 45%;
+      }
+      #c1 {
+        z-index: 2;
+        --stop-vh: 30vh;
+        --stop-x: 40%;
+      }
+      #c2 {
+        z-index: 3;
+        --stop-vh: 40vh;
+        --stop-x: 35%;
+      }
+      #c3 {
+        z-index: 4;
+        --stop-vh: 30vh;
+        --stop-x: 50%;
+      }
+      #c4 {
+        z-index: 5;
+        --stop-vh: 40vh;
+        --stop-x: 55%;
+      }
+      #c5 {
+        z-index: 6;
+        --stop-vh: 40vh;
+        --stop-x: 45%;
+      }
+      #c6 {
+        z-index: 7;
+        --stop-vh: 20vh;
+        --stop-x: 55%;
+      }
+      #c7 {
+        z-index: 8;
+        --stop-vh: 20vh;
+        --stop-x: 35%;
+      }
+      #c8 {
+        z-index: 9;
+        --stop-vh: 80vh;
+        --stop-x: 65%;
+      }
+
+      footer {
+        height: 150vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="stack" id="stack">
+      <div class="spacer"></div>
+
+      <div class="circle" id="c0"></div>
+      <div class="gap"></div>
+
+      <div class="circle" id="c1"></div>
+      <div class="gap"></div>
+
+      <div class="circle" id="c2"></div>
+      <div class="gap"></div>
+
+      <div class="circle" id="c3"></div>
+      <div class="gap"></div>
+
+      <div class="circle" id="c4"></div>
+      <div class="gap"></div>
+
+      <div class="circle" id="c5"></div>
+      <div class="gap"></div>
+
+      <div class="circle" id="c6"></div>
+      <div class="gap"></div>
+
+      <div class="circle" id="c7"></div>
+      <div class="gap"></div>
+
+      <div class="circle" id="c8"></div>
+      <div class="gap"></div>
+    </main>
+
+    <footer></footer>
+
+    <script>
+      // Fait apparaître les ronds progressivement
+      const circles = document.querySelectorAll(".circle");
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            } else {
+              entry.target.classList.remove("visible");
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: `0px 0px -${getComputedStyle(document.documentElement)
+            .getPropertyValue("--appear-margin")
+            .trim()} 0px`,
+          threshold: 0,
+        }
+      );
+
+      circles.forEach((c) => io.observe(c));
+    </script>
+  </body>
+</html>

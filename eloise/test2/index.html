@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pixel guy — horizontal scroll walk</title>
+    <style>
+      :root {
+        --scale: 3; /* grossissement du pixel-art */
+        --step-px: 40; /* nb de px de scroll pour changer de frame */
+        --world-width: 5000px; /* longueur du niveau */
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden; /* on gère nous-même le scroll horizontal */
+        background: #000000; /* ciel */
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          sans-serif;
+      }
+
+      /* Viewport plein écran contenant le monde défilant horizontalement */
+      .viewport {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      /* Le monde qui scrolle en X */
+      .world {
+        position: absolute;
+        inset: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+        scroll-behavior: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Bandeau du niveau */
+      .level {
+        position: relative;
+        height: 100vh;
+        width: var(--world-width);
+        background: linear-gradient(#414b50 0 65%, #303039 65% 66%, #6ab04c 66%)
+          no-repeat;
+      }
+
+      /* décor simple */
+      .ground {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 34vh;
+        background: repeating-linear-gradient(
+          90deg,
+          #596753 0 60px,
+          #31392f 60px 120px
+        );
+        box-shadow: 0 -6px 0 #67696b inset;
+      }
+
+      /* quelques “collines” */
+      .hill {
+        position: absolute;
+        bottom: 34vh;
+        width: 30vw;
+        height: 30vw;
+        border-radius: 50%;
+        background: #3a229b;
+        opacity: 0.6;
+        filter: blur(0.5px);
+      }
+      .hill.h1 {
+        left: 10vw;
+      }
+      .hill.h2 {
+        left: 45vw;
+        width: 40vw;
+        height: 40vw;
+        background: #72bd66;
+      }
+      .hill.h3 {
+        left: 85vw;
+      }
+      .hill.h4 {
+        left: 130vw;
+        width: 35vw;
+        height: 35vw;
+      }
+
+      /* ————— HERO PIXEL ART ————— */
+
+      /* Conteneur sticky : reste à ~40% de la largeur de l’écran pendant que le monde défile */
+      .hero-wrap {
+        position: sticky;
+        left: 40vw;
+        top: 55vh;
+        transform: translate(-50%, -50%);
+        width: calc(16px * var(--scale));
+        height: calc(20px * var(--scale));
+        z-index: 10;
+        image-rendering: pixelated;
+        pointer-events: none;
+      }
+
+      /* Le personnage, assemblé avec des “pixels” via box-shadows.
+     On aura 4 poses: p0, p1, p2, p3 (cycle de marche). */
+      .hero {
+        position: absolute;
+        width: calc(1px * var(--scale));
+        height: calc(1px * var(--scale));
+      }
+
+      /* Palette */
+      /* peau */
+      .skin {
+        background: #f1c27d;
+      }
+      /* cheveux */
+      .hair {
+        background: #3b2c29;
+      }
+      /* tshirt */
+      .tee {
+        background: #357edd;
+      }
+      /* pantalon */
+      .pant {
+        background: #333;
+      }
+      /* semelle */
+      .shoe {
+        background: #111;
+      }
+      /* œil */
+      .eye {
+        background: #111;
+      }
+
+      /* — Base du sprite (pose neutre) : on dessine par box-shadow un 16x20 “sprite”.
+     Chaque pixel est une ombre à décalage (x*scale, y*scale).
+     Pour rester lisible, on dessine par couches. */
+
+      /* TÊTE + CHEVEUX */
+      .p0 .hair {
+        box-shadow:
+    /* frange/haut tête */ calc(6 * var(--scale))
+            calc(1 * var(--scale)) 0 0 #3b2c29,
+          calc(7 * var(--scale)) calc(1 * var(--scale)) 0 0 #3b2c29,
+          calc(8 * var(--scale)) calc(1 * var(--scale)) 0 0 #3b2c29,
+          calc(9 * var(--scale)) calc(1 * var(--scale)) 0 0 #3b2c29,
+          calc(10 * var(--scale)) calc(1 * var(--scale)) 0 0 #3b2c29,
+          calc(5 * var(--scale)) calc(2 * var(--scale)) 0 0 #3b2c29,
+          calc(11 * var(--scale)) calc(2 * var(--scale)) 0 0 #3b2c29;
+      }
+
+      .p0 .skin {
+        box-shadow:
+    /* visage */ calc(6 * var(--scale))
+            calc(2 * var(--scale)) 0 0 #f1c27d,
+          calc(7 * var(--scale)) calc(2 * var(--scale)) 0 0 #f1c27d,
+          calc(8 * var(--scale)) calc(2 * var(--scale)) 0 0 #f1c27d,
+          calc(9 * var(--scale)) calc(2 * var(--scale)) 0 0 #f1c27d,
+          calc(10 * var(--scale)) calc(2 * var(--scale)) 0 0 #f1c27d,
+          calc(6 * var(--scale)) calc(3 * var(--scale)) 0 0 #f1c27d,
+          calc(7 * var(--scale)) calc(3 * var(--scale)) 0 0 #f1c27d,
+          calc(8 * var(--scale)) calc(3 * var(--scale)) 0 0 #f1c27d,
+          calc(9 * var(--scale)) calc(3 * var(--scale)) 0 0 #f1c27d,
+          calc(10 * var(--scale)) calc(3 * var(--scale)) 0 0 #f1c27d;
+      }
+
+      .p0 .eye {
+        box-shadow: calc(8 * var(--scale)) calc(3 * var(--scale)) 0 0 #111;
+      }
+
+      /* CORPS (t-shirt) */
+      .p0 .tee {
+        box-shadow: calc(6 * var(--scale)) calc(5 * var(--scale)) 0 0 #357edd,
+          calc(7 * var(--scale)) calc(5 * var(--scale)) 0 0 #357edd,
+          calc(8 * var(--scale)) calc(5 * var(--scale)) 0 0 #357edd,
+          calc(9 * var(--scale)) calc(5 * var(--scale)) 0 0 #357edd,
+          calc(10 * var(--scale)) calc(5 * var(--scale)) 0 0 #357edd,
+          calc(5 * var(--scale)) calc(6 * var(--scale)) 0 0 #357edd,
+          calc(6 * var(--scale)) calc(6 * var(--scale)) 0 0 #357edd,
+          calc(7 * var(--scale)) calc(6 * var(--scale)) 0 0 #357edd,
+          calc(8 * var(--scale)) calc(6 * var(--scale)) 0 0 #357edd,
+          calc(9 * var(--scale)) calc(6 * var(--scale)) 0 0 #357edd,
+          calc(10 * var(--scale)) calc(6 * var(--scale)) 0 0 #357edd,
+          calc(11 * var(--scale)) calc(6 * var(--scale)) 0 0 #357edd;
+      }
+
+      /* BRAS (peau) */
+      .p0 .arm {
+        box-shadow: calc(5 * var(--scale)) calc(7 * var(--scale)) 0 0 #f1c27d,
+          calc(11 * var(--scale)) calc(7 * var(--scale)) 0 0 #f1c27d;
+      }
+
+      /* JAMBE (pantalon) + CHAUSSURES */
+      .p0 .pant {
+        box-shadow: calc(7 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(8 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(9 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(7 * var(--scale)) calc(9 * var(--scale)) 0 0 #333,
+          calc(9 * var(--scale)) calc(9 * var(--scale)) 0 0 #333;
+      }
+      .p0 .shoe {
+        box-shadow: calc(7 * var(--scale)) calc(10 * var(--scale)) 0 0 #111,
+          calc(9 * var(--scale)) calc(10 * var(--scale)) 0 0 #111;
+      }
+
+      /* — POSES DE MARCHE —
+     On varie juste les jambes/bras (pant/shoe/arm) par frame.
+     Pour la lisibilité, on surcharge p1..p3. */
+      .p1 .pant {
+        box-shadow: calc(6 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(7 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(9 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(10 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(6 * var(--scale)) calc(9 * var(--scale)) 0 0 #333,
+          calc(10 * var(--scale)) calc(9 * var(--scale)) 0 0 #333;
+      }
+      .p1 .shoe {
+        box-shadow: calc(6 * var(--scale)) calc(10 * var(--scale)) 0 0 #111,
+          calc(10 * var(--scale)) calc(10 * var(--scale)) 0 0 #111;
+      }
+      .p1 .arm {
+        box-shadow: calc(4 * var(--scale)) calc(7 * var(--scale)) 0 0 #f1c27d,
+          calc(12 * var(--scale)) calc(7 * var(--scale)) 0 0 #f1c27d;
+      }
+
+      .p2 .pant {
+        box-shadow: calc(7 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(8 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(9 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(8 * var(--scale)) calc(9 * var(--scale)) 0 0 #333;
+      }
+      .p2 .shoe {
+        box-shadow: calc(8 * var(--scale)) calc(10 * var(--scale)) 0 0 #111;
+      }
+      .p2 .arm {
+        box-shadow: calc(5 * var(--scale)) calc(7 * var(--scale)) 0 0 #f1c27d,
+          calc(11 * var(--scale)) calc(7 * var(--scale)) 0 0 #f1c27d;
+      }
+
+      .p3 .pant {
+        box-shadow: calc(6 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(7 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(9 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(10 * var(--scale)) calc(8 * var(--scale)) 0 0 #333,
+          calc(7 * var(--scale)) calc(9 * var(--scale)) 0 0 #333,
+          calc(9 * var(--scale)) calc(9 * var(--scale)) 0 0 #333;
+      }
+      .p3 .shoe {
+        box-shadow: calc(7 * var(--scale)) calc(10 * var(--scale)) 0 0 #111,
+          calc(9 * var(--scale)) calc(10 * var(--scale)) 0 0 #111;
+      }
+      .p3 .arm {
+        box-shadow: calc(6 * var(--scale)) calc(7 * var(--scale)) 0 0 #f1c27d,
+          calc(10 * var(--scale)) calc(7 * var(--scale)) 0 0 #f1c27d;
+      }
+
+      /* indication visuelle discrette de progression */
+      .hud {
+        position: fixed;
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        z-index: 50;
+      }
+      .hud .bar {
+        height: 100%;
+        width: 0%;
+        background: #333;
+        transition: width 0.1s linear;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="viewport">
+      <div class="world" id="world">
+        <div class="level">
+          <div class="hill h1"></div>
+          <div class="hill h2"></div>
+          <div class="hill h3"></div>
+          <div class="hill h4"></div>
+
+          <!-- Héros -->
+          <div class="hero-wrap">
+            <div id="hero" class="hero p0">
+              <div class="hair"></div>
+              <div class="skin"></div>
+              <div class="eye"></div>
+              <div class="tee"></div>
+              <div class="arm"></div>
+              <div class="pant"></div>
+              <div class="shoe"></div>
+            </div>
+          </div>
+
+          <div class="ground"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud"><div class="bar" id="bar"></div></div>
+
+    <script>
+      const world = document.getElementById("world");
+      const hero = document.getElementById("hero");
+      const bar = document.getElementById("bar");
+
+      // rendre la molette verticale => scroll horizontal (plus pratique)
+      world.addEventListener(
+        "wheel",
+        (e) => {
+          // touche Shift déjà fait nativement, on évite double
+          if (!e.shiftKey) {
+            e.preventDefault();
+            world.scrollLeft += e.deltaY;
+          }
+        },
+        { passive: false }
+      );
+
+      // on démarre au début
+      world.scrollLeft = 0;
+
+      // animation de marche basée sur la distance parcourue
+      let lastFrame = 0;
+      function onScroll() {
+        const stepPx = parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            "--step-px"
+          )
+        );
+        const x = world.scrollLeft;
+
+        // frame 0..3 selon progression
+        const f = Math.floor(x / stepPx) % 4;
+        if (f !== lastFrame) {
+          hero.classList.remove("p0", "p1", "p2", "p3");
+          hero.classList.add("p" + f);
+          lastFrame = f;
+        }
+
+        // MAJ barre de progression
+        const max = world.scrollWidth - world.clientWidth;
+        const ratio = max ? x / max : 0;
+        bar.style.width = (ratio * 100).toFixed(1) + "%";
+      }
+
+      world.addEventListener("scroll", onScroll, { passive: true });
+      onScroll(); // init
+    </script>
+  </body>
+</html>

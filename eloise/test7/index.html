@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>retrectit agrandit</title>
+    <style>
+      :root {
+        /* échelles dynamiques (MAJ par JS) */
+        --s1: 5; /* cercle A (rétrécit) */
+        --s2: 5; /* cercle B (grandit) */
+
+        /* tailles de base */
+        --size: 160px;
+        --border: 3px;
+        --bg: #0f1115;
+        --fg: #f5f7fa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial,
+          sans-serif;
+        background: black;
+        color: var(--fg);
+        overflow-x: hidden;
+      }
+
+      header,
+      footer,
+      .block {
+        padding: 12vh 6vw;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      /* Section très haute qui pilote l’animation au scroll */
+      .scroller {
+        position: relative;
+        height: 500vh; /* longueur du "parcours" */
+      }
+
+      /* Les deux ronds restent collés au centre de l’écran */
+      .pair {
+        position: sticky;
+        top: 50vh;
+        translate: 0 -50%;
+        height: 0; /* on n’occupe pas d’espace vertical */
+        pointer-events: none;
+        isolation: isolate;
+      }
+
+      .circle {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        width: var(--size);
+        height: var(--size);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        transition: filter 0.15s ease;
+        will-change: transform;
+      }
+
+      /* Cercle A (rétrécit) */
+      .c1 {
+        transform: translate(-50%, -50%) scale(var(--s1));
+        background: white;
+        z-index: 2;
+        mix-blend-mode: difference;
+      }
+
+      /* Cercle B (grandit) — léger décalage pour qu’on voie bien les deux */
+      .c2 {
+        transform: translate(calc(-50% + 10px), calc(-50% + 10px))
+          scale(var(--s2));
+        background: white;
+        z-index: 1;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28) inset;
+        mix-blend-mode: screen;
+      }
+
+      /* Un peu de contenu pour scroller autour */
+      .block p {
+        max-width: 70ch;
+        opacity: 0.9;
+      }
+
+      footer {
+        padding: 18vh 6vw 24vh;
+        text-align: center;
+        opacity: 0.8;
+      }
+
+      /* Accessibilité : si l’utilisateur réduit les animations, on garde des steps doux */
+      @media (prefers-reduced-motion: reduce) {
+        .c1,
+        .c2 {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section
+      class="scroller"
+      id="scroller"
+      aria-label="Animation des deux ronds"
+    >
+      <div class="pair" aria-hidden="true">
+        <div class="circle c1">
+          <img src="images/homme-moyen.png" alt="Homme moyen" />
+        </div>
+        <div class="circle c2">
+          <img src="images/homme-petit.png" alt="Homme moyen" />
+        </div>
+      </div>
+    </section>
+
+    <script>
+      /*
+    Principe :
+    - On mesure la progression du scroll à l’intérieur de .scroller (0 → 1).
+    - On mappe cette progression sur deux échelles opposées :
+        s1 = de 1.4 → 0.4 (rétrécit)
+        s2 = de 0.4 → 1.4 (grandit)
+    - On pousse ces valeurs dans des variables CSS (--s1, --s2).
+  */
+
+      const root = document.documentElement;
+      const scroller = document.getElementById("scroller");
+
+      function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+      }
+
+      function updateScales() {
+        const rect = scroller.getBoundingClientRect();
+        const vh = innerHeight || 1;
+
+        // progression de la zone scroller dans le viewport
+        const progress = clamp((vh - rect.top) / (rect.height - vh), 0, 1);
+
+        // amplitudes (modifiable)
+        const startBig = 5,
+          endSmall = 0.2;
+
+        const s1 = startBig + (endSmall - startBig) * progress; // décroît
+        const s2 = endSmall + (startBig - endSmall) * progress; // croît
+
+        root.style.setProperty("--s1", s1.toFixed(3));
+        root.style.setProperty("--s2", s2.toFixed(3));
+      }
+
+      // Écoutes
+      addEventListener("scroll", updateScales, { passive: true });
+      addEventListener("resize", updateScales);
+      updateScales(); // init
+    </script>
+  </body>
+</html>

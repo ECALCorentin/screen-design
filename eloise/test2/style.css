@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+body {
+  height: 500vh; /* Permet de scroller */
+  margin: 0;
+}
+
+.circle {
+  width: 100px; /* Largeur du cercle */
+  height: 100px; /* Hauteur du cercle */
+  border-radius: 50%; /* Forme ronde */
+  background-color: white; /* Fond blanc */
+  border: 2px solid black; /* Contour noir */
+  position: sticky; /* Le cercle devient "collant" */
+  top: 50px; /* Place le cercle hors de la vue initialement */
+  left: 50%; /* Centré horizontalement */
+  transform: translateX(-50%); /* Ajustement pour centrer */
+}
