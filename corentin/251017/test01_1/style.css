@@ -1,0 +1,36 @@
+body{
+    margin: 0px;
+    padding: 0px;
+}
+
+.appartement{
+    height: 94vh;
+    width: 96vw;
+    border: 35px solid rgb(0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    /* transition: height 0.1s ease-out; */
+}
+
+h3{
+    font-size: 35px;
+    font-family: monospace;
+    font-weight: 1000;
+}
+
+.cave{
+    height: 50vh;
+    width: 96vw;
+    border: 35px solid rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 100vh;
+    background-color: black;
+    color: white;
+}
