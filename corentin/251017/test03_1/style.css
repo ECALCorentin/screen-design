@@ -25,15 +25,17 @@ h3{
 }
 
 .cave{
-    height: 40vh;
-    width: 100vw;
+    height: 0vh;
+    width: 96vw;
     display: flex;
+    border: white 35px solid;
+    border-top: white 35px solid;
     justify-content: center;
     align-items: center;
     position: fixed;
-    top: 100vh;
+    bottom: 0px;
     left: 0px;
     background-color: black;
     color: white;
-    /* transition: top 0.1s ease-out, opacity 0.1s ease-out; */
+    /* transition: height 0.1s ease-out; */
 }
