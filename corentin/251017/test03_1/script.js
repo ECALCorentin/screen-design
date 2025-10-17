@@ -8,10 +8,11 @@ window.addEventListener('scroll', function () {
     const cave = document.querySelector('.cave');
 
     // Réduire la taille de l'appartement en fonction du scroll
-    const minHeight = 45.1274;
-    const maxHeight = 94;
-    const currentHeight = maxHeight - (scrollPercent * (maxHeight - minHeight));
 
+
+    const minHeight = 38;
+    const maxHeight = 88;
+    const currentHeight = maxHeight - (scrollPercent * (maxHeight - minHeight));
     appartement.style.height = currentHeight + 'vh';
 
     // Augmenter la hauteur de la cave
