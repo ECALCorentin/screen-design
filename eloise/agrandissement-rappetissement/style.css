@@ -1,0 +1,92 @@
+/* Mise en page en 2 colonnes : 1/4 + 3/4 */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 3fr; /* 25% / 75% */
+  min-height: 100vh;
+}
+
+/* Bloc 1/4 */
+.side {
+  position: sticky;
+  top: 0;
+  height: 100vh; /* occupe la hauteur de la fenêtre */
+  overflow: hidden; /* pas de scroll interne */
+  padding: 1.25rem;
+  background: #000000; /* exemple */
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.side img {
+  animation: shrink 30s linear forwards; /* Animation pour rétrécir l'image */
+  transform-origin: bottom; /* L'image rétrécit à partir du bas */
+}
+
+/* Bloc 3/4 */
+.main {
+  min-height: 300vh; /* => page scrollable (≈ 3 écrans) */
+  padding: 2rem;
+  background: #000000;
+  text-align: center;
+}
+
+/* Contenu exemple long */
+.section-long {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.texte {
+  max-width: 600px;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: white;
+  transform-origin: left center; /* d'où part l’agrandissement */
+  animation: grandir 30s linear forwards;
+}
+
+.h1 {
+  font-size: 5rem;
+  color: white;
+}
+
+@keyframes shrink {
+  0% {
+    transform: scale(1); /* Taille normale */
+    opacity: 1; /* Complètement visible */
+  }
+  100% {
+    transform: scale(0); /* Rétrécit à 0 */
+    opacity: 0; /* Devient invisible */
+  }
+}
+
+/* Animation : x1 → x2.5 sur 30s */
+@keyframes grandir {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(2.5);
+  }
+}
+
+/* Accessibilité : désactive l’anim pour les personnes sensibles au mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .texte-qui-grandit {
+    animation: none;
+  }
+}
+
+/* Responsive : empile sur petits écrans */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .side {
+    position: static; /* désactive le sticky sur mobile si besoin */
+    height: auto;
+  }
+}

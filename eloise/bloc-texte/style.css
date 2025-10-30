@@ -1,0 +1,29 @@
+/* style.css */
+body {
+  background-color: rgb(0, 0, 0);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Conteneur en colonne */
+.container-image {
+  display: flex;
+  flex-direction: column; /* empile verticalement */
+  align-items: center; /* centre horizontalement les images */
+  gap: 16px; /* espace entre les images */
+  padding: 16px;
+  max-width: 900px; /* optionnel : limite la largeur du bloc */
+  margin: 0 auto; /* centre le conteneur dans la page */
+}
+
+/* Images responsives */
+.container-image .image {
+  display: block; /* enlève l'espace inline */
+  width: 50%; /* prend toute la largeur du conteneur */
+  height: auto; /* garde les proportions */
+  max-width: 100%; /* évite de dépasser */
+}

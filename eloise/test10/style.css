@@ -1,0 +1,67 @@
+.grid {
+  display: flex;
+  width: 100%;
+  height: 300vh; /* Prend toute la hauteur de la fenêtre */
+}
+
+.homme-qui-retrecit {
+  height: 100vh; /* Prend toute la hauteur de la fenêtre */
+  position: relative;
+  width: 25%; /* 1/4 de la largeur */
+  background-color: rgb(76, 77, 78); /* Couleur pour visualiser */
+  overflow: hidden;
+}
+.homme-qui-retrecit img {
+  position: relative;
+  max-width: 100%; /* L'image ne dépasse pas la largeur de la div */
+  height: auto; /* Conserve les proportions de l'image */
+  animation: shrink 30s linear forwards; /* Animation pour rétrécir l'image */
+  transform-origin: bottom; /* L'image rétrécit à partir du bas */
+  mix-blend-mode: overlay; /* Mode de fusion pour un effet visuel */
+}
+.video-fond {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* la vidéo remplit tout le bloc */
+  z-index: 0;
+  opacity: 0.5;
+}
+
+@keyframes shrink {
+  0% {
+    transform: scale(1); /* Taille normale */
+    opacity: 1; /* Complètement visible */
+  }
+  100% {
+    transform: scale(0); /* Rétrécit à 0 */
+    opacity: 0; /* Devient invisible */
+  }
+}
+
+.site {
+  width: 75%; /* 3/4 de la largeur */
+  background-color: rgb(0, 0, 0); /* Couleur pour visualiser */
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.texte {
+  max-width: 600px;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: white;
+}
+
+.h1 {
+  font-size: 5rem;
+  color: white;
+}
