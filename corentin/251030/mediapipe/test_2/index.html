@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>MediaPipe Hands - Pinch Test</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- CHARGEMENT DES LIBS MEDIAPIPE (globales) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+</head>
+
+<body>
+    <video id="input_video" autoplay></video>
+    <canvas id="output_canvas"></canvas>
+
+    <div class="img">
+        <img src="img/chaise-bois-massif-assise-rembourree.png" height="55%" alt="chaise" id="chaise">
+        <img src="img/homme-grand.png" height="120%" alt="homme" id="homme">
+        <img src="img/table-de-chevet-en-bois-blanc-et-gris-avec-2-tiroirs.png" height="55%" alt="table" id="table">
+    </div>
+
+    <script type="module" src="./js/main.js"></script>
+</body>
+
+</html>
