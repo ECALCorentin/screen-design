@@ -1,0 +1,14 @@
+.container {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column; /* empile verticalement */
+  align-items: center; /* centre les images si elles sont plus petites */
+}
+
+/* Les images prennent la largeur dispo sans dépasser leur taille */
+.container img {
+  display: block;
+  width: 100%;
+  height: 50%;
+  height: auto;
+}
