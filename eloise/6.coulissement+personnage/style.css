@@ -1,0 +1,113 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden; /* obligatoire pour cacher le slide */
+  font-family: Arial, sans-serif;
+}
+
+.texte1 {
+  animation: fadeOutTexte 10s forwards;
+}
+@keyframes fadeOutTexte {
+  0% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+
+  60% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.texte2 {
+  animation: fadeInTexte 10s;
+}
+@keyframes fadeInTexte {
+  0% {
+    opacity: 0;
+  }
+  60% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.overlay {
+  position: fixed; /* reste au-dessus tant qu'il n'a pas disparu */
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(103, 103, 103); /* noir plein → tu peux changer */
+  color: white;
+  z-index: 10;
+  animation: fadeOutOverlay 5s ease forwards; /* 5s, modifiable */
+}
+
+/* Fondu progressif de 100% à 0% */
+@keyframes fadeOutOverlay {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* La "page" contient les 2 écrans l'un sous l'autre */
+.page {
+  height: 200svh; /* 2 écrans empilés verticalement */
+  animation: slidePage 5s ease-in-out 10s forwards;
+  /* 10s d’attente, puis 20s d’animation */
+}
+
+.screen {
+  height: 100svh; /* chaque section prend tout l’écran */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.screen1 {
+  background: #ffffff;
+  color: rgb(0, 0, 0);
+}
+.screen2 {
+  background: #ffffff;
+  color: rgb(0, 0, 0);
+  border: #000000 solid 5px;
+}
+
+/* Animation :
+   0% → 50% : rien ne bouge
+   50% → 100% : on glisse la page vers le haut pour montrer l’écran du dessous
+*/
+@keyframes slidePage {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100svh);
+  }
+}
+
+.img-container {
+  display: inline-block;
+  position: relative;
+}

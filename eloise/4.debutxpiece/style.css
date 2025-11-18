@@ -1,0 +1,86 @@
+:root {
+  --bg: #000;
+  --fg: #fff;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  align-items: flex-start; /* image descend depuis le haut */
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+}
+
+.page {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.typewrap {
+  font-size: 50px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+}
+/* Le voile noir au-dessus du contenu */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  animation: fadeOut 10s ease forwards;
+}
+
+.slide {
+  width: 1000px; /* Ajuste selon ton image */
+  align-items: center;
+  animation: revealSlide 15s ease forwards;
+  opacity: 0; /* pour une apparition plus propre */
+}
+
+@keyframes revealSlide {
+  0% {
+    transform: translateY(-350%);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-350%);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80%);
+    opacity: 1;
+  }
+}
+
+/* Animation : opacité 100% -> 0% */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
