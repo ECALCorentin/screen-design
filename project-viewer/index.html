@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arborescence Tests</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'MartianMono';
+            src: url(MartianMonoVF.otf);
+        }
+
+        body {
+            font-family: 'MartianMono', monospace;
+            margin: 0;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 350px;
+            height: 100vh;
+            background: #fff;
+            border-right: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            height: 40px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 13px;
+            padding-right: 13px;
+        }
+
+        #list-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-top: 10px;
+            font-size: 12px;
+        }
+
+        /* --- LIGNES DE L'ARBRE --- */
+        .tree-row {
+            display: flex;
+            align-items: center;
+            padding: 1px 10px;
+            cursor: default;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: background 0.1s;
+        }
+
+        /* Style Dossier Parent (Non jouable) */
+        .is-folder {
+            color: #888;
+            font-weight: bold;
+        }
+
+        /* Style Test (Jouable) */
+        .is-test {
+            cursor: pointer;
+            color: #000;
+        }
+
+        /* Hover effet "Code" uniquement sur les tests */
+        .is-test:hover {
+            background-color: black;
+            color: white;
+        }
+
+        .is-test.active {
+            background-color: #eee;
+            /* Gris clair pour le test actif, ou Noir si vous préférez */
+            font-weight: bold;
+        }
+
+        /* Icones et Numéros */
+        .icon-folder {
+            margin-right: 8px;
+            color: #d1d5da;
+        }
+
+        .test-number {
+            margin-right: 8px;
+            opacity: 0.6;
+            font-size: 0.9em;
+        }
+
+        .is-test:hover .test-number {
+            opacity: 1;
+            color: #888;
+        }
+
+        /* Numéro reste gris au hover */
+
+
+        /* --- MAIN --- */
+        #main {
+            margin-left: 350px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #toolbar {
+            height: 40px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background: #fff;
+            font-size: 12px;
+            justify-content: space-between;
+        }
+
+        iframe {
+            flex: 1;
+            border: none;
+            width: 100%;
+        }
+
+        .btn-github {
+            text-decoration: none;
+            color: black;
+            border: 1px solid #ccc;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <span>EXPLORATEUR</span>
+            <span id="count" style="background:#eee; padding:2px 6px; border-radius:4px;">0</span>
+        </div>
+        <div id="list-container">Chargement...</div>
+    </div>
+
+    <div id="main">
+        <div id="toolbar">
+            <span id="current-title">Sélectionnez un test</span>
+            <a id="github-link" href="#" target="_blank" class="btn-github">
+                <i class="fab fa-github"></i> Code
+            </a>
+        </div>
+        <iframe id="viewer-frame" name="viewer"></iframe>
+    </div>
+
+    <script>
+        const USER = 'ECALCorentin';
+        const REPO = 'screen-design';
+        const BRANCH = 'main';
+
+        async function init() {
+            const listDiv = document.getElementById('list-container');
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${USER}/${REPO}/git/trees/${BRANCH}?recursive=1`);
+                const data = await response.json();
+
+                if (data.message) { listDiv.innerText = "Erreur: " + data.message; return; }
+
+                // 1. Identification des dossiers
+                const playablePaths = new Set();
+                const parentPaths = new Set();
+
+                data.tree.forEach(item => {
+                    if (item.path.endsWith('.html')) {
+                        if (!item.path.includes('/')) return; // Ignore racine
+
+                        const folderPath = item.path.substring(0, item.path.lastIndexOf('/'));
+
+                        // Ignore les dossiers cachés
+                        if (folderPath.startsWith('.') || folderPath.includes('/.')) return;
+
+                        playablePaths.add(folderPath);
+
+                        // Ajoute tous les parents à la liste pour l'arborescence
+                        let parts = folderPath.split('/');
+                        while (parts.length > 0) {
+                            parts.pop();
+                            if (parts.length > 0) parentPaths.add(parts.join('/'));
+                        }
+                    }
+                });
+
+                // 2. Filtrage de l'arbre complet
+                // On garde si c'est un test OU si c'est un parent de test
+                const treeItems = data.tree.filter(item => {
+                    if (item.type !== 'tree') return false;
+                    return playablePaths.has(item.path) || parentPaths.has(item.path);
+                });
+
+                renderTree(treeItems, playablePaths);
+                document.getElementById('count').innerText = playablePaths.size;
+
+            } catch (e) { console.error(e); }
+        }
+
+        function renderTree(items, playableSet) {
+            const container = document.getElementById('list-container');
+            container.innerHTML = '';
+
+            // Tri alphabétique standard
+            items.sort((a, b) => a.path.localeCompare(b.path));
+
+            let testCounter = 1; // Compteur pour les [1], [2]...
+
+            items.forEach(item => {
+                const depth = item.path.split('/').length - 1;
+                const name = item.path.split('/').pop();
+                const isPlayable = playableSet.has(item.path);
+
+                const div = document.createElement('div');
+
+                // Indentation visuelle (20px par niveau)
+                div.style.paddingLeft = `${15 + (depth * 20)}px`;
+
+                if (isPlayable) {
+                    // --- C'EST UN TEST ---
+                    div.className = 'tree-row is-test';
+                    div.innerHTML = `<span class="test-number">[${testCounter}]</span> ${name}`;
+
+                    div.onclick = () => {
+                        document.querySelectorAll('.is-test').forEach(e => e.classList.remove('active'));
+                        div.classList.add('active');
+                        loadSite(item.path, name);
+                    };
+                    testCounter++;
+                } else {
+                    // --- C'EST UN DOSSIER PARENT ---
+                    div.className = 'tree-row is-folder';
+                    div.innerHTML = `<i class="fas fa-folder icon-folder"></i> ${name}`;
+                }
+
+                container.appendChild(div);
+            });
+        }
+
+        function loadSite(path, name) {
+            document.getElementById('current-title').innerText = `Test : ${name}`;
+            document.getElementById('github-link').href = `https://github.com/${USER}/${REPO}/tree/${BRANCH}/${path}`;
+            document.getElementById('viewer-frame').src = `https://${USER}.github.io/${REPO}/${path}/`;
+        }
+
+        init();
+    </script>
+</body>
