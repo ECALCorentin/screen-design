@@ -1,0 +1,67 @@
+body {
+            background-color: black;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
+            color: white;
+            user-select: none;
+        }
+
+        #spider {
+            position: fixed;
+            top: -800px;
+            width: 500px;
+            cursor: grab;
+            transition: top 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        #spider img {
+            width: 100%;
+            display: block;
+        }
+
+        #spider.visible {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #spider.struggling {
+            cursor: grabbing;
+            width: 100px;
+            transition: width 5s;
+            animation: shake 0.1s infinite;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-50%) rotate(5deg);
+            }
+
+            50% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+
+            75% {
+                transform: translateY(-50%) rotate(-5deg);
+            }
+
+            100% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+        }
+
+        #status {
+            position: absolute;
+            bottom: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
