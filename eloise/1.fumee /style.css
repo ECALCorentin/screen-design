@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  text-align: center;
+  z-index: 2;
+}
+
+/* Le voile noir au-dessus du contenu */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  animation: fadeOut 10s ease forwards;
+}
+
+/* Animation : opacité 100% -> 0% */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

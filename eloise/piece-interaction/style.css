@@ -1,0 +1,28 @@
+.container {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container img {
+  width: 100%;
+  display: block;
+  height: auto;
+}
+
+/* Permet la superposition seulement sur la 2e image */
+.image-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.overlay-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%; /* maintenant ceci fonctionnera */
+  height: auto;
+  pointer-events: none;
+}

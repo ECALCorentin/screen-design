@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #000;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Conteneur principal */
+.wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Image initiale au centre */
+.single-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* le checkbox est caché */
+#trigger {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Image initiale au centre */
+.single-image img {
+  width: 300px;
+  cursor: pointer;
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+/* Quand on clique → elle disparaît */
+#trigger:checked + .single-image img {
+  opacity: 0;
+  transform: scale(0.7);
+}
+
+/* Galerie cachée au départ */
+.gallery {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+
+/* Quand on clique → la galerie apparaît */
+#trigger:checked ~ .gallery {
+  opacity: 3;
+  pointer-events: auto;
+}
+
+/* Style général des images */
+.gallery img {
+  position: absolute; /* ← essentiel pour les placer à la main */
+}
+
+/* Exemple de placement manuel des images */
+.img-a {
+  top: 55%;
+  width: 400px; /* tu peux changer */
+
+  left: 35%;
+}
+.img-b {
+  top: 10%;
+  width: 300px; /* tu peux changer */
+
+  left: 55%;
+}
+.img-c {
+  top: 50%;
+  width: 300px; /* tu peux changer */
+
+  left: 80%;
+}
+.img-d {
+  top: 55%;
+  width: 500px; /* tu peux changer */
+  left: 10%;
+}

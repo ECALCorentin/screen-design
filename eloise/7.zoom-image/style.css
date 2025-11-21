@@ -1,0 +1,98 @@
+/* Le container qui contiendra le changement de fond */
+.img-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  /* Fond initial transparent (ou autre couleur) */
+  background: transparent;
+  animation: bgToBlack 5s ease-out forwards;
+  animation-delay: 2s; /* démarre en même temps que l'image */
+}
+
+/* Animation du fond */
+@keyframes bgToBlack {
+  0% {
+    background: transparent;
+  }
+  70% {
+    background: black;
+  }
+  100% {
+    background: black;
+  }
+}
+
+/* Caché mais présent */
+#zoom-trigger {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Style image normal */
+.zoom-image {
+  width: 300px; /* ajuste si besoin */
+  transition: transform 1s ease, opacity 1s ease;
+  cursor: pointer;
+}
+
+/* Quand on clique → agrandit + disparaît */
+#zoom-trigger:checked + label .zoom-image {
+  transform: scale(5.5);
+  opacity: 0;
+}
+
+/* Nouvelle image qui apparaît en grandissement */
+.grow-image {
+  position: absolute;
+  mix-blend-mode: color-burn;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.1); /* très petite au départ */
+  opacity: 0;
+  width: 300px; /* Ajuste selon ton besoin */
+  animation: growIn 5s ease-out forwards;
+  animation-delay: 2s; /* Attendre 5 secondes avant de commencer */
+}
+
+/* Animation de grandissement */
+@keyframes growIn {
+  0% {
+    transform: translate(-50%, -50%) scale(0.1);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -40%) scale(10);
+    opacity: 1;
+  }
+}
+
+.livre {
+  width: 30%; /* ajuste si besoin */
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  animation: apparaitre 2s ease-out forwards;
+  animation-delay: 6s; /* Attendre 5 secondes avant de commencer */
+}
+
+@keyframes apparaitre {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+}
