@@ -1,0 +1,87 @@
+@charset "UTF-8";
+*{
+    transition: all 2s ease;
+}
+.container {
+transform: perspective(800px);
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  transform-style: preserve-3d;
+
+
+}
+
+
+.spider {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 10px;
+  background-image: url("../images/spider.png");
+  background-size: cover;
+transform: rotateY(+10deg) translate(-300px,200px);
+}
+
+.chair {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  background-image: url("../images/chair.png");
+    background-size: cover;
+
+  border-radius: 10px;
+  transform: rotateY(-10deg) rotateX(20deg) rotateY(0deg) translateY(-350px);
+}
+.floor {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  width: 1500px;
+  height: 1500px;
+transform: translate(-50%, -50%) rotate3d(1, 0 , 0, 90deg);
+  background-image: url("../images/floor.jpg");
+    background-size: cover;
+    z-index: -1;
+
+}
+
+.container:hover .spider {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 1000px;
+  height: 500px;
+  background-image: url("../images/spider.png");
+  background-size: cover;
+  border-radius: 50%;
+transform: rotateY(+10deg) translate(0px,300px);
+}
+
+.container:hover .chair {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  width: 2000px;
+  height: 2000px;
+  background-image: url("../images/chair.png");
+    background-size: cover;
+
+  border-radius: 10px;
+  transform: rotateY(-10deg) rotateX(20deg) rotateY(0deg) translateY(-1850px);
+}
+.container:hover .floor {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  width: 15000px;
+  height: 15000px;
+transform: translate(-50%, -50%) rotate3d(1, 0 , 0, 90deg);
+  background-image: url("../images/floor.jpg");
+    background-size: cover;
+    z-index: -1;
+
+}
