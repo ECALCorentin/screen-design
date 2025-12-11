@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caméra CSS + Tweakpane</title>
+    <style>
+        :root {
+            --camera-z: 0px;
+            --camera-rotate: 0deg;
+            --scene-perspective: 1000px;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scene {
+            width: 100%;
+            height: 100%;
+            perspective: var(--scene-perspective);
+        }
+
+        .piece {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translateZ(var(--camera-z)) rotateY(var(--camera-rotate));
+        }
+
+        .piece img {
+            position: absolute;
+            width: 40%;
+            pointer-events: none;
+        }
+
+        .back {
+            transform: translateZ(-500px) scale(2);
+            filter: brightness(1);
+            z-index: 1;
+        }
+
+        .front {
+            transform: translateZ(0px);
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="scene">
+        <div class="piece">
+            <img src="img/p1_background.png" alt="Arrière plan" class="back">
+            <img src="img/p1_front.png" alt="Premier plan" class="front">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tweakpane@4.0.3/dist/tweakpane.min.js"></script>
+
+    <script type="module">
+        // 1. IMPORT CORRECT (ES Module)
+        import { Pane } from 'https://cdn.jsdelivr.net/npm/tweakpane@4.0.3/dist/tweakpane.min.js';
+
+        // 2. CONFIGURATION
+        const PARAMS = {
+            zoom: 0,
+            rotation: 0,
+            perspective: 1000
+        };
+
+        // 3. CRÉATION DU PANNEAU (Note: on utilise "new Pane" directement)
+        const pane = new Pane({
+            title: 'Réglages Caméra',
+        });
+
+        // 4. AJOUT DES SLIDERS
+        pane.addBinding(PARAMS, 'zoom', {
+            min: -1000,
+            max: 600,
+            step: 10,
+            label: 'Zoom (Z)',
+        });
+
+        pane.addBinding(PARAMS, 'rotation', {
+            min: -60,
+            max: 60,
+            step: 1,
+            label: 'Rotation Y',
+        });
+
+        pane.addBinding(PARAMS, 'perspective', {
+            min: 200,
+            max: 2000,
+            step: 50,
+            label: 'Perspective',
+        });
+
+        // 5. ÉVÉNEMENTS
+        pane.on('change', (ev) => {
+            document.documentElement.style.setProperty('--camera-z', PARAMS.zoom + 'px');
+            document.documentElement.style.setProperty('--camera-rotate', PARAMS.rotation + 'deg');
+            document.documentElement.style.setProperty('--scene-perspective', PARAMS.perspective + 'px');
+        });
+    </script>
+</body>
+
+</html>

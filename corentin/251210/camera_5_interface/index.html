@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP 3D EXTREME</title>
+    <style>
+        :root {
+            --persp: 600px;
+            /* Un peu moins agressif pour éviter la distorsion trop forte sur les bords */
+            --cam-x: 0px;
+            --cam-y: 0px;
+            --cam-z: 0px;
+            --rot-x: 0deg;
+            --rot-y: 0deg;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scene {
+            width: 100%;
+            height: 100%;
+            perspective: var(--persp);
+            pointer-events: none;
+        }
+
+        .world {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+
+            /* LE SECRET EST ICI : LE PIVOT */
+            /* On ne tourne pas sur nous-même, on tourne autour d'un point loin derrière (-1500px) */
+            transform-origin: 50% 50% -1500px;
+
+            transform:
+                translate3d(var(--cam-x), var(--cam-y), var(--cam-z)) rotateX(var(--rot-x)) rotateY(var(--rot-y));
+
+            will-change: transform;
+            /* Optimisation performance */
+        }
+
+        .piece img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .back {
+            /* On pousse très loin (-3500px) et on grossit énormément (x6.5) */
+            transform: translate(-50%, -50%) translateZ(-3500px) scale(6.5);
+            filter: brightness(1) blur(2px);
+            /* Flou de profondeur */
+            z-index: 1;
+        }
+
+        .front {
+            /* On avance l'image vers nous (+200px) pour qu'elle se détache encore plus */
+            transform: translate(-50%, -50%) translateZ(200px) scale(0.8);
+            z-index: 10;
+        }
+
+        /* AJOUT : Des particules pour sentir l'espace vide */
+        .dust {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            top: 50%;
+            left: 50%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* On place des particules à différentes profondeurs */
+        .d1 {
+            transform: translate(-200px, -100px) translateZ(-500px);
+        }
+
+        .d2 {
+            transform: translate(300px, 200px) translateZ(-1000px);
+        }
+
+        .d3 {
+            transform: translate(-400px, 100px) translateZ(-2000px);
+        }
+
+        .d4 {
+            transform: translate(100px, -300px) translateZ(-100px);
+        }
+
+        #proxy {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            z-index: 100;
+        }
+
+        #proxy:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="scene">
+        <div class="world">
+            <div class="piece">
+                <img src="img/p1_background.png" class="back">
+
+                <div class="dust d1"></div>
+                <div class="dust d2"></div>
+                <div class="dust d3"></div>
+                <div class="dust d4"></div>
+
+                <img src="img/p1_front.png" class="front">
+            </div>
+        </div>
+    </div>
+
+    <div id="proxy"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(Draggable);
+        const root = document.documentElement.style;
+        let zoomLevel = 0;
+
+        Draggable.create("#proxy", {
+            type: "x,y",
+            trigger: "#proxy",
+            inertia: true,
+            edgeResistance: 0.5,
+            dragResistance: 0.4, // Un peu plus lourd pour sentir la masse
+            onDrag: update3D,
+            onThrowUpdate: update3D
+        });
+
+        function update3D() {
+            root.setProperty('--cam-x', this.x * 1.2 + 'px');
+            root.setProperty('--cam-y', this.y * 1.2 + 'px');
+
+            const rotateY = this.x / -30; // Sensibilité de rotation horizontale
+            const rotateX = this.y / 40;  // Sensibilité de rotation verticale
+
+            const clampedRotY = Math.max(Math.min(rotateY, 45), -45);
+            const clampedRotX = Math.max(Math.min(rotateX, 45), -45);
+
+            root.setProperty('--rot-y', clampedRotY + 'deg');
+            root.setProperty('--rot-x', clampedRotX + 'deg');
+        }
+
+        const proxy = document.getElementById("proxy");
+        proxy.addEventListener("wheel", (e) => {
+            e.preventDefault();
+            // Zoom très réactif
+            zoomLevel += e.deltaY * -3;
+            zoomLevel = Math.min(Math.max(zoomLevel, -5000), 1500);
+
+            gsap.to("html", {
+                "--cam-z": zoomLevel + "px",
+                duration: 1,
+                ease: "power2.out"
+            });
+        }, { passive: false });
+
+    </script>
+</body>
+
+</html>

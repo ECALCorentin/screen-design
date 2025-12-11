@@ -1,0 +1,104 @@
+  :root {
+            /* Objectif */
+            --persp: 1000px;
+            --persp-origin-x: 50%;
+            --persp-origin-y: 50%;
+
+            /* Caméra Transform */
+            --cam-x: 0px;
+            --cam-y: 0px;
+            --cam-z: 0px;
+            --cam-rx: 0deg;
+            --cam-ry: 0deg;
+            --cam-rz: 0deg;
+
+            --pivot-z: 0px;
+
+
+            --layer-gap: 500px;
+            --back-scale: 2;
+
+
+            --blur-back: 0px;
+            --dim-back: 0.5;
+            --blur-front: 0px;
+            /* Flou devant */
+            --backface: visible;
+            /* Voir le dos des images ? */
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: white;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scene {
+            width: 100%;
+            height: 100%;
+            perspective: var(--persp);
+            perspective-origin: var(--persp-origin-x) var(--persp-origin-y);
+        }
+
+        .piece {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+
+            /* NOUVEAU : On définit où se trouve l'axe de rotation */
+            transform-origin: 50% 50% var(--pivot-z);
+
+            transform:
+                translate3d(var(--cam-x), var(--cam-y), var(--cam-z)) rotateX(var(--cam-rx)) rotateY(var(--cam-ry)) rotateZ(var(--cam-rz));
+        }
+
+        .piece img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -15%;
+            margin-left: -20%;
+            width: 40%;
+            pointer-events: none;
+
+            /* NOUVEAU : Gestion du dos des cartes */
+            backface-visibility: var(--backface);
+            transition: filter 0.2s;
+        }
+
+        .back {
+            transform: translateZ(calc(var(--layer-gap) * -1)) scale(var(--back-scale));
+            z-index: 1;
+            /* NOUVEAU : Filtres dynamiques */
+            filter: blur(var(--blur-back)) brightness(var(--dim-back));
+        }
+
+        .front {
+            transform: translateZ(0px);
+            z-index: 2;
+
+            /* NOUVEAU : Filtres dynamiques */
+            filter: blur(var(--blur-front));
+        }
+
+        /* Grille Sol */
+        .grid {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4000px;
+            height: 4000px;
+            /* Plus grande */
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100px 100px;
+            transform: translate(-50%, -50%) rotateX(90deg) translateZ(-300px);
+            pointer-events: none;
+        }

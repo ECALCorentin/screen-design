@@ -1,0 +1,57 @@
+ body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 1. La SCÈNE = L'objectif de la caméra */
+        .scene {
+            width: 100%;
+            height: 100%;
+            perspective: 700px;
+        }
+
+        .piece {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: avanceCamera 5s infinite alternate ease-in-out;
+        }
+
+        .piece img {
+            position: absolute;
+            width: 50%;
+            object-fit: contain;
+            /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); */
+        }
+
+        /* Image d'arrière-plan (Loin) */
+        .back {
+            transform: translateZ(-300px) scale(1.8);
+            z-index: 1;
+            filter: brightness(1);
+        }
+
+        .front {
+            transform: translateZ(0);
+            z-index: 2;
+        }
+
+        @keyframes avanceCamera {
+            0% {
+                transform: translateZ(-200px);
+            }
+
+            100% {
+                transform: translateZ(200px);
+            }
+        }
