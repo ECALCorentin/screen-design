@@ -1,56 +1,85 @@
 :root {
-    /* On garde une perspective moyenne pour ne pas trop déformer l'avant-plan */
-    --persp: 800px; 
+    /* --- CONFIGURATION GLOBALE --- */
+    --persp: 800px;
+
+    --cam-x: 30px; --cam-y: 30px; --cam-z: 271px;
+    --cam-rx: 0deg; --cam-ry: 0deg; --cam-rz: 0deg;
     
-    --cam-x: 0px; --cam-y: 0px; --cam-z: 0px;
-    --rot-x: 0deg; --rot-y: 0deg;
+    --pivot-z: -2000px;
+
+    --layer-gap: 500px;
+    --back-scale: 2;
+    --blur-back: 0px;
+    --dim-back: 1;
 }
 
-/* ... le reste du body et scene reste pareil ... */
+body {
+    margin: 0; height: 100vh; overflow: hidden;
+    background-color: white;
+    font-family: sans-serif;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.scene {
+    width: 100%; height: 100%;
+    perspective: var(--persp);
+    perspective-origin: 50% 50%;
+}
+
 
 .world {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     transform-style: preserve-3d;
     
-    /* PIVOT : On recule le point de rotation pour qu'il soit entre les deux images */
-    transform-origin: 50% 50% -2000px;
+    transform-origin: 50% 50% var(--pivot-z);
 
     transform:
         translate3d(var(--cam-x), var(--cam-y), var(--cam-z)) 
-        rotateX(var(--rot-x)) 
-        rotateY(var(--rot-y));
-
+        rotateX(var(--cam-rx)) 
+        rotateY(var(--cam-ry)) 
+        rotateZ(var(--cam-rz));
+    
     will-change: transform;
 }
+
+
+.piece {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    transform-style: preserve-3d;
+}
+
+.piece-1 {
+    transform: translate3d(-200px, -120px, 0);
+}
+.piece-2 {
+    transform: translate3d(0, 105px, 0);
+}
+
+.piece-3 {
+    rotate: 90deg;
+    transform: translate3d(18px, -310px, 0);
+
+}
+
 
 .piece img {
     position: absolute;
     top: 50%; left: 50%;
-    /* Centrage crucial car on va beaucoup scaler */
-    transform: translate(-50%, -50%); 
+    width: 400px;
+    transform: translate(-50%, -50%);
     pointer-events: none;
 }
 
-/* --- LE FOND --- */
 .back {
-    /* EXPLICATION MATHÉMATIQUE : */
-    /* On pousse à -6000px (très loin) */
-    /* Du coup, il faut grossir l'image (scale 10) pour compenser la distance */
-    transform: translate(-50%, -50%) translateZ(-6000px) scale(10);
-    
-    filter: brightness(1) blur(1px); 
+    transform: translate(-50%, -50%) translateZ(-500px) scale(2);
     z-index: 1;
+    filter: blur(var(--blur-back)) brightness(var(--dim-back));
 }
 
-/* --- L'AVANT-PLAN --- */
 .front {
-    /* On le tire vers nous (+600px) */
-    /* Il va paraître énorme, donc on le réduit un peu (scale 0.7) */
-    transform: translate(-50%, -50%) translateZ(600px) scale(0.7);
-    
-    z-index: 10;
-    /* Une ombre portée aide le cerveau à comprendre la distance */
-    filter: drop-shadow(0 50px 80px rgba(0,0,0,0.6));
+    transform: translate(-50%, -50%) translateZ(0px);
+    z-index: 2;
 }

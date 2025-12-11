@@ -1,41 +1,46 @@
-gsap.registerPlugin(Draggable);
-const root = document.documentElement.style;
-let zoomLevel = 0;
+import { Pane } from 'https://cdn.jsdelivr.net/npm/tweakpane@4.0.3/dist/tweakpane.min.js';
 
-Draggable.create("#proxy", {
-    type: "x,y",
-    trigger: "#proxy",
-    inertia: true,
-    edgeResistance: 0.5,
-    dragResistance: 0.4,
-    onDrag: update3D,
-    onThrowUpdate: update3D
-});
+const PARAMS = {
+    x: 30,   // C'est maintenant le paramètre principal (Déplacement latéral)
+    z: 10, // On recule un peu la caméra pour voir plus large
+    rx: 0, ry: 0,
+    gap: 500
+};
 
-function update3D() {
-    root.setProperty('--cam-x', this.x * 1.2 + 'px');
-    root.setProperty('--cam-y', this.y * 1.2 + 'px');
+const pane = new Pane({ title: 'Galerie Panoramique' });
 
+const update = () => {
+    const r = document.documentElement.style;
 
-    const rotateY = this.x / -30;
-    const rotateX = this.y / 40;
+    r.setProperty('--cam-x', (PARAMS.x * -1) + 'px');
+    r.setProperty('--cam-z', PARAMS.z + 'px');
+    r.setProperty('--cam-rx', PARAMS.rx + 'deg');
+    r.setProperty('--cam-ry', PARAMS.ry + 'deg');
+    r.setProperty('--layer-gap', PARAMS.gap + 'px');
+};
 
-    const clampedRotY = Math.max(Math.min(rotateY, 45), -45);
-    const clampedRotX = Math.max(Math.min(rotateX, 45), -45);
+// SLIDER NAVIGATION
+// De -1500 (Gauche) à 1500 (Droite)
+pane.addBinding(PARAMS, 'x', {
+    min: -1500,
+    max: 1500,
+    step: 10,
+    label: 'Navigation (X)'
+}).on('change', update);
 
-    root.setProperty('--rot-y', clampedRotY + 'deg');
-    root.setProperty('--rot-x', clampedRotX + 'deg');
-}
+// SLIDER PROFONDEUR CAMÉRA
+pane.addBinding(PARAMS, 'z', {
+    min: -1000,
+    max: 2000,
+    label: 'Distance Caméra'
+}).on('change', update);
 
-const proxy = document.getElementById("proxy");
-proxy.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    zoomLevel += e.deltaY * -3;
-    zoomLevel = Math.min(Math.max(zoomLevel, -5000), 1500);
+// EFFETS 3D
+const fRot = pane.addFolder({ title: 'Regard (Tête)' });
+fRot.addBinding(PARAMS, 'ry', { min: -60, max: 60, label: 'Gauche/Droite' });
+fRot.addBinding(PARAMS, 'rx', { min: -45, max: 45, label: 'Haut/Bas' });
+fRot.on('change', update);
 
-    gsap.to("html", {
-        "--cam-z": zoomLevel + "px",
-        duration: 1,
-        ease: "power2.out"
-    });
-}, { passive: false });
+pane.addBinding(PARAMS, 'gap', { min: 0, max: 1000 }).on('change', update);
+
+update();
