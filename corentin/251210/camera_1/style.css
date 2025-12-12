@@ -36,7 +36,13 @@
 
         /* Image d'arrière-plan (Loin) */
         .back {
-            transform: translateZ(-300px) scale(1.8);
+            transform: translateZ(-200px) scale(1.2);
+            z-index: 1;
+            filter: brightness(1);
+        }
+
+        .mid {
+            transform: translateZ(-100px) scale(1);
             z-index: 1;
             filter: brightness(1);
         }
@@ -52,6 +58,6 @@
             }
 
             100% {
-                transform: translateZ(200px);
+                transform: translateZ(500px);
             }
         }

@@ -1,0 +1,12 @@
+.chairs-container{
+    height: 100%;
+    width: 100%;
+    position: relative;
+    top: 35vh;
+}
+
+.chairs{
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+}
